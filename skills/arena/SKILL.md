@@ -53,13 +53,22 @@ last answer to it is the baseline to beat.
 
 Run `ARENA plan --agents N` (or `--quick`). It prints the rounds, the sub-agent calls and the waves.
 
+Always tell the user the size and a rough token cost before anything runs. Estimate the cost as the
+number of sub-agent calls times about 60k tokens (measured: an 8-agent run on a short coding task was
+43 calls and about 2.8M tokens, against about 50k for a single agent). Tokens grow with the length of
+the task file, so say it is a rough figure.
+
 - **The user asked for the arena** (typed `/arena`, said "arena", or asked to make them compete):
-  tell them in one line how big it is, for example "100 agents, 7 rounds, 595 sub-agent calls", and
-  start.
+  - With `--agents N` or `--quick` and at most 100 sub-agent calls: tell them in one line how big it
+    is, for example "16 agents, 4 rounds, 91 sub-agent calls, roughly 5M tokens", and start.
+  - Otherwise, including the default of 100 agents: ask once before spending anything. Offer the size
+    they asked for (for example "100 agents, 595 sub-agent calls, roughly 36M tokens"), `--quick`
+    (16 agents, 91 calls, roughly 5M tokens) and `--agents 8` (43 calls, roughly 2.5M tokens). Wait
+    for the answer.
 - **This skill fired because the user is unhappy** ("that's wrong", "try again", "bad answer") and
-  never mentioned the arena: ask once before spending anything. Offer three options: the full arena
-  (100 agents, 595 sub-agent calls), `--quick` (16 agents, 91 calls), or an ordinary retry. Wait for
-  the answer.
+  never mentioned the arena: ask once before spending anything. Offer three options: `--quick`
+  (16 agents, 91 calls, roughly 5M tokens), the full arena (100 agents, 595 sub-agent calls, roughly
+  36M tokens), or an ordinary retry. Wait for the answer.
 
 Sub-agents write their work into `.arena/` in the current directory. In the default permission mode
 that is one approval per file, which is hundreds on a big run. Before the spawn phase, suggest
